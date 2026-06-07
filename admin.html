@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - SREE KPJ GEMS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .admin-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .admin-header {
+            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+            color: #fff;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .admin-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .admin-header p {
+            opacity: 0.9;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-box {
+            background: #fff;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        .stat-box h3 {
+            color: #d4af37;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-box p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .content-section {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .section-header {
+            background: linear-gradient(135deg, #d4af37, #c41e3a);
+            color: #fff;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .btn-export {
+            background: #25D366;
+            color: #fff;
+        }
+
+        .btn-export:hover {
+            background: #1fa853;
+        }
+
+        .btn-delete {
+            background: #ff6b6b;
+            color: #fff;
+        }
+
+        .btn-delete:hover {
+            background: #ee5a52;
+        }
+
+        .btn-clear {
+            background: #c41e3a;
+            color: #fff;
+        }
+
+        .btn-clear:hover {
+            background: #a0172c;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            padding: 1.5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #f9f9f9;
+            border-bottom: 2px solid #d4af37;
+        }
+
+        th {
+            text-align: left;
+            padding: 1rem;
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:hover {
+            background: #f9f9f9;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 3rem;
+            color: #999;
+        }
+
+        .empty-message i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .timestamp {
+            font-size: 0.85rem;
+            color: #999;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-completed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .filters {
+            padding: 1.5rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-group label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            padding: 0.6rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: inherit;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            padding: 2rem;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: auto;
+            padding: 2rem;
+            border-radius: 10px;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #d4af37;
+        }
+
+        .modal-header h2 {
+            color: #1a1a1a;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        .detail-item {
+            margin-bottom: 1rem;
+        }
+
+        .detail-item label {
+            display: block;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 0.3rem;
+        }
+
+        .detail-item span {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .no-data {
+            padding: 2rem;
+            text-align: center;
+            color: #999;
+        }
+
+        @media (max-width: 768px) {
+            .admin-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .action-buttons {
+                width: 100%;
+            }
+
+            .filters {
+                flex-direction: column;
+            }
+
+            table {
+                font-size: 0.9rem;
+            }
+
+            th, td {
+                padding: 0.7rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Header -->
+        <div class="admin-header">
+            <h1><i class="fas fa-crown"></i> Admin Dashboard</h1>
+            <p>SREE KPJ GEMS - Consultation & Message Management</p>
+        </div>
+
+        <!-- Debug & Tools Section -->
+        <div style="background: #fff3cd; border: 2px solid #ffc107; border-radius: 8px; padding: 15px; margin-bottom: 2rem;">
+            <h3 style="margin-bottom: 10px;">🔧 Debug Tools</h3>
+            <p style="margin-bottom: 10px; font-size: 0.9rem;">Use these tools to verify data is being saved correctly:</p>
+            <button onclick="checkStoredData()" style="background: #17a2b8; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; margin-right: 10px;">
+                <i class="fas fa-search"></i> Check Stored Data
+            </button>
+            <button onclick="generateTestData()" style="background: #28a745; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer;">
+                <i class="fas fa-flask"></i> Generate Test Data
+            </button>
+        </div>
+
+        <!-- Statistics -->
+        <div class="dashboard-grid">
+            <div class="stat-box">
+                <h3 id="totalConsultations">0</h3>
+                <p>Total Consultations</p>
+            </div>
+            <div class="stat-box">
+                <h3 id="totalMessages">0</h3>
+                <p>Total Messages</p>
+            </div>
+            <div class="stat-box">
+                <h3 id="totalContacts">0</h3>
+                <p>Total Contacts</p>
+            </div>
+        </div>
+
+        <!-- Consultations Section -->
+        <div class="content-section">
+            <div class="section-header">
+                <h2><i class="fas fa-calendar-check"></i> Consultations</h2>
+                <div class="action-buttons">
+                    <button class="btn-export" onclick="exportConsultationsToCSV()">
+                        <i class="fas fa-download"></i> Export CSV
+                    </button>
+                    <button class="btn-delete" onclick="deleteConsultation()">
+                        <i class="fas fa-trash"></i> Delete Selected
+                    </button>
+                    <button class="btn-clear" onclick="clearAllConsultations()">
+                        <i class="fas fa-eraser"></i> Clear All
+                    </button>
+                </div>
+            </div>
+
+            <div id="consultationsContainer">
+                <div class="no-data">
+                    <i class="fas fa-inbox"></i>
+                    <p>No consultation bookings yet</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Messages Section -->
+        <div class="content-section">
+            <div class="section-header">
+                <h2><i class="fas fa-envelope"></i> Contact Messages</h2>
+                <div class="action-buttons">
+                    <button class="btn-export" onclick="exportMessagesToCSV()">
+                        <i class="fas fa-download"></i> Export CSV
+                    </button>
+                    <button class="btn-delete" onclick="deleteMessage()">
+                        <i class="fas fa-trash"></i> Delete Selected
+                    </button>
+                    <button class="btn-clear" onclick="clearAllMessages()">
+                        <i class="fas fa-eraser"></i> Clear All
+                    </button>
+                </div>
+            </div>
+
+            <div id="messagesContainer">
+                <div class="no-data">
+                    <i class="fas fa-inbox"></i>
+                    <p>No messages yet</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detail Modal -->
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Details</h2>
+                <button class="close-btn" onclick="closeModal()">×</button>
+            </div>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script>
+        // Load data on page load
+        document.addEventListener('DOMContentLoaded', loadDashboard);
+
+        function loadDashboard() {
+            const consultations = JSON.parse(localStorage.getItem('consultations')) || [];
+            const messages = JSON.parse(localStorage.getItem('messages')) || [];
+
+            // Update statistics
+            document.getElementById('totalConsultations').textContent = consultations.length;
+            document.getElementById('totalMessages').textContent = messages.length;
+            document.getElementById('totalContacts').textContent = consultations.length + messages.length;
+
+            // Load consultations table
+            loadConsultationsTable(consultations);
+
+            // Load messages table
+            loadMessagesTable(messages);
+        }
+
+        function loadConsultationsTable(consultations) {
+            const container = document.getElementById('consultationsContainer');
+
+            if (consultations.length === 0) {
+                container.innerHTML = '<div class="no-data"><i class="fas fa-inbox"></i><p>No consultation bookings yet</p></div>';
+                return;
+            }
+
+            let html = `
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>DOB</th>
+                                <th>Consultation Time</th>
+                                <th>Submitted</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            consultations.forEach((c, index) => {
+                html += `
+                    <tr>
+                        <td>${c.name}</td>
+                        <td>${c.email}</td>
+                        <td>${c.phone}</td>
+                        <td>${c.dob}</td>
+                        <td>${c.time}</td>
+                        <td><span class="timestamp">${c.timestamp}</span></td>
+                        <td>
+                            <button onclick="viewConsultationDetail(${index})" style="background: #d4af37; color: #fff; padding: 4px 12px; border-radius: 3px; font-size: 0.8rem;">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        function loadMessagesTable(messages) {
+            const container = document.getElementById('messagesContainer');
+
+            if (messages.length === 0) {
+                container.innerHTML = '<div class="no-data"><i class="fas fa-inbox"></i><p>No messages yet</p></div>';
+                return;
+            }
+
+            let html = `
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Message Preview</th>
+                                <th>Submitted</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            messages.forEach((m, index) => {
+                const preview = m.message.substring(0, 50) + (m.message.length > 50 ? '...' : '');
+                html += `
+                    <tr>
+                        <td>${m.name}</td>
+                        <td>${m.email}</td>
+                        <td>${preview}</td>
+                        <td><span class="timestamp">${m.timestamp}</span></td>
+                        <td>
+                            <button onclick="viewMessageDetail(${index})" style="background: #d4af37; color: #fff; padding: 4px 12px; border-radius: 3px; font-size: 0.8rem;">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        function viewConsultationDetail(index) {
+            const consultations = JSON.parse(localStorage.getItem('consultations')) || [];
+            const c = consultations[index];
+
+            const modalBody = document.getElementById('modalBody');
+            modalBody.innerHTML = `
+                <div class="detail-item">
+                    <label>Name:</label>
+                    <span>${c.name}</span>
+                </div>
+                <div class="detail-item">
+                    <label>Email:</label>
+                    <span><a href="mailto:${c.email}">${c.email}</a></span>
+                </div>
+                <div class="detail-item">
+                    <label>Phone:</label>
+                    <span><a href="tel:${c.phone}">${c.phone}</a></span>
+                </div>
+                <div class="detail-item">
+                    <label>Date of Birth:</label>
+                    <span>${c.dob}</span>
+                </div>
+                <div class="detail-item">
+                    <label>Preferred Consultation Time:</label>
+                    <span>${c.time}</span>
+                </div>
+                <div class="detail-item">
+                    <label>Concerns / Questions:</label>
+                    <span>${c.message || 'No message provided'}</span>
+                </div>
+                <div class="detail-item">
+                    <label>Submitted:</label>
+                    <span>${c.timestamp}</span>
+                </div>
+            `;
+
+            document.getElementById('modalTitle').textContent = 'Consultation Details';
+            document.getElementById('detailModal').style.display = 'block';
+        }
+
+        function viewMessageDetail(index) {
+            const messages = JSON.parse(localStorage.getItem('messages')) || [];
+            const m = messages[index];
+
+            const modalBody = document.getElementById('modalBody');
+            modalBody.innerHTML = `
+                <div class="detail-item">
+                    <label>Name:</label>
+                    <span>${m.name}</span>
+                </div>
+                <div class="detail-item">
+                    <label>Email:</label>
+                    <span><a href="mailto:${m.email}">${m.email}</a></span>
+                </div>
+                <div class="detail-item">
+                    <label>Message:</label>
+                    <span>${m.message}</span>
+                </div>
+                <div class="detail-item">
+                    <label>Submitted:</label>
+                    <span>${m.timestamp}</span>
+                </div>
+            `;
+
+            document.getElementById('modalTitle').textContent = 'Message Details';
+            document.getElementById('detailModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('detailModal').style.display = 'none';
+        }
+
+        function exportConsultationsToCSV() {
+            const consultations = JSON.parse(localStorage.getItem('consultations')) || [];
+            if (consultations.length === 0) {
+                alert('No consultations to export');
+                return;
+            }
+
+            // Proper CSV with BOM for Excel compatibility
+            let csv = '\uFEFF'; // UTF-8 BOM for Excel
+            csv += 'Name,Email,Phone,Date of Birth,Preferred Time,Concerns,Submitted Date\n';
+            consultations.forEach(c => {
+                const escapedConcerns = (c.message || '').replace(/"/g, '""');
+                const row = [
+                    c.name || '',
+                    c.email || '',
+                    c.phone || '',
+                    c.dob || '',
+                    c.time || '',
+                    '"' + escapedConcerns + '"',
+                    c.timestamp || ''
+                ];
+                csv += row.join(',') + '\n';
+            });
+
+            downloadFile(csv, 'consultations.xlsx', 'text/csv;charset=utf-8');
+        }
+
+        function exportMessagesToCSV() {
+            const messages = JSON.parse(localStorage.getItem('messages')) || [];
+            if (messages.length === 0) {
+                alert('No messages to export');
+                return;
+            }
+
+            // Proper CSV with BOM for Excel compatibility
+            let csv = '\uFEFF'; // UTF-8 BOM for Excel
+            csv += 'Name,Email,Message,Submitted Date\n';
+            messages.forEach(m => {
+                const escapedMessage = (m.message || '').replace(/"/g, '""');
+                const row = [
+                    m.name || '',
+                    m.email || '',
+                    '"' + escapedMessage + '"',
+                    m.timestamp || ''
+                ];
+                csv += row.join(',') + '\n';
+            });
+
+            downloadFile(csv, 'messages.xlsx', 'text/csv;charset=utf-8');
+        }
+
+        function downloadFile(content, filename, mimeType) {
+            const blob = new Blob([content], { type: mimeType });
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Debug function to check stored data
+        function checkStoredData() {
+            const consultations = JSON.parse(localStorage.getItem('consultations')) || [];
+            const messages = JSON.parse(localStorage.getItem('messages')) || [];
+            
+            console.log('=== STORED DATA DEBUG ===');
+            console.log('Consultations count:', consultations.length);
+            console.log('Consultations data:', consultations);
+            console.log('Messages count:', messages.length);
+            console.log('Messages data:', messages);
+            
+            alert(`STORAGE CHECK:\n\nConsultations: ${consultations.length} records\nMessages: ${messages.length} records\n\n(Check browser console for details)`);
+        }
+
+        // Generate test data for testing
+        function generateTestData() {
+            if (confirm('This will add test data to help verify exports. Continue?')) {
+                const testConsultations = [
+                    {
+                        name: 'Rajesh Kumar',
+                        email: 'rajesh@example.com',
+                        phone: '9876543210',
+                        dob: '1990-05-15',
+                        time: '10:00',
+                        message: 'Career guidance needed',
+                        timestamp: new Date().toLocaleString()
+                    },
+                    {
+                        name: 'Priya Singh',
+                        email: 'priya@example.com',
+                        phone: '8765432109',
+                        dob: '1992-08-22',
+                        time: '14:30',
+                        message: 'Relationship concerns',
+                        timestamp: new Date().toLocaleString()
+                    }
+                ];
+
+                const testMessages = [
+                    {
+                        name: 'Amit Patel',
+                        email: 'amit@example.com',
+                        message: 'Great service! Highly recommended.',
+                        timestamp: new Date().toLocaleString()
+                    }
+                ];
+
+                localStorage.setItem('consultations', JSON.stringify(testConsultations));
+                localStorage.setItem('messages', JSON.stringify(testMessages));
+                loadDashboard();
+                alert('Test data added! Now try exporting.');
+            }
+        }
+
+        function deleteConsultation() {
+            alert('Select a specific consultation to delete (feature coming soon)');
+        }
+
+        function deleteMessage() {
+            alert('Select a specific message to delete (feature coming soon)');
+        }
+
+        function clearAllConsultations() {
+            if (confirm('Are you sure you want to delete all consultations? This cannot be undone.')) {
+                localStorage.removeItem('consultations');
+                loadDashboard();
+                alert('All consultations deleted');
+            }
+        }
+
+        function clearAllMessages() {
+            if (confirm('Are you sure you want to delete all messages? This cannot be undone.')) {
+                localStorage.removeItem('messages');
+                loadDashboard();
+                alert('All messages deleted');
+            }
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('detailModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+📸 BACKGROUND IMAGE SETUP INSTRUCTIONS
+======================================
+
+STEP 1: Save Your Astrology Background Image
+---------------------------------------------
+1. Take the "Meet Our Astrology Expert" image you provided
+2. Save it as: astrology-bg.jpg
+3. Place it in the SAME FOLDER as index.html
+
+Folder structure should look like:
+  xample/
+  ├── index.html
+  ├── admin.html
+  ├── script.js
+  ├── styles.css
+  ├── astrology-bg.jpg  ← ADD YOUR IMAGE HERE
+  └── (other files...)
+
+STEP 2: The image will automatically animate!
+---------------------------------------------
+✅ Zoom in and out smoothly
+✅ Fade opacity effect
+✅ 20-second animation loop
+✅ Works on desktop and mobile
+✅ Fixed background for parallax effect
+
+STEP 3: Customize (Optional)
+-----------------------------
+If you want to adjust:
+
+- Animation speed: Open styles.css and find "backgroundZoom 20s"
+  Change "20s" to "30s" for slower, or "10s" for faster
+
+- Brightness: Find "filter: brightness(0.8)"
+  Change 0.8 to: 
+  - 0.5 = darker
+  - 1.0 = normal brightness
+  - 1.2 = brighter
+
+- Animation type: You can change from zoom to other effects:
+  Find "@keyframes backgroundZoom" and modify the transform value
+
+TROUBLESHOOTING
+---------------
+
+❌ Image not showing?
+   → Check filename is exactly: astrology-bg.jpg
+   → Check it's in the same folder as index.html
+   → Refresh your browser (Ctrl+F5)
+
+❌ Image is blurry?
+   → Use a high-quality image (1920x1080 or larger)
+   → Ensure image is in JPG or PNG format
+
+❌ Performance issues?
+   → Use a compressed image
+   → Reduce file size using online tool
+
+SUPPORTED IMAGE FORMATS
+-----------------------
+✅ JPG / JPEG
+✅ PNG
+✅ WebP
+✅ SVG
+
+RECOMMENDED IMAGE SPECS
+-----------------------
+- Size: 1920x1080 pixels (Full HD)
+- Format: JPG or PNG
+- File size: Under 500KB
+- Aspect ratio: 16:9 widescreen
+
+TESTING
+-------
+1. Add astrology-bg.jpg to your folder
+2. Open index.html in browser
+3. Scroll to see the zoom animation
+4. Test on mobile device too!
+
+That's it! Your animated background is ready! 🎉
